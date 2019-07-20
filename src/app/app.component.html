@@ -12,9 +12,9 @@
 <!-- SELECT COMP (COPY FROM) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_FROM'">
     <p>Select a competition to copy from:</p>
-    <p *ngFor="let competitionId of competitionsToChooseFrom">
-      <input type="radio" name="competitionToCopyFrom" value="{{competitionId}}"
-        (click)="handleCompetitionSelected(competitionId)">{{competitionId}}<br>
+    <p *ngFor="let competition of competitionsToChooseFrom">
+      <input type="radio" name="competitionToCopyFrom" value="{{competition.id}}"
+        (click)="handleCompetitionSelected(competition.id)">{{competition.id}} ({{competition.days}} days)<br>
     </p>
     <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
   </div>
@@ -32,8 +32,8 @@
 <!-- SELECT COMP (COPY TO) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_TO'">
     <p>Select a competition to copy to:</p>
-    <p *ngFor="let competitionId of competitionsToChooseFrom">
-      <button (click)="handleCopyTo(competitionId)">{{competitionId}}</button>
+    <p *ngFor="let competition of competitionsToChooseFrom">
+      <button (click)="handleCopyTo(competition.id)">{{competition.id}}</button>
     </p>
     <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
   </div>

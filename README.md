@@ -1,11 +1,21 @@
-# WcaCopySchedule
+# WCA-copy-schedule
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.4.
+Hosted at: 
 
-## Development server
+# Development
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+To run locally:
+1) > ng serve
 
-## Build
+2) Navigate to http://localhost:4200/
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+To build & deploy to github pages:
+1) > ng build -c=production
+
+2) Move content of 'demo' directory to parent
+
+3) Commit & push to master
+
+4) > git subtree push --prefix dist origin gh-pages
+
+This pushes the 'dist' directory to a branch called 'gh-pages', which will trigger a build by GitHub Pages
