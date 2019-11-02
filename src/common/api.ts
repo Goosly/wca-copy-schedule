@@ -86,6 +86,8 @@ export class ApiService {
         for (let r=0; r < replaceKeys.length; r++) {
           activities[i].startTime = activities[i].startTime.replace(replaceKeys[r], replaceDates[replaceKeys[r]]);
           activities[i].endTime = activities[i].endTime.replace(replaceKeys[r], replaceDates[replaceKeys[r]]);
+          activities[i].childActivities = [];
+          activities[i].extensions = [];
         }
       }
       
