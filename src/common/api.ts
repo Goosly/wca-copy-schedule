@@ -91,7 +91,8 @@ export class ApiService {
         }
       }
       
-      this.httpClient.patch('https://cors-anywhere.herokuapp.com/' +
+      this.httpClient.patch(
+        // 'https://cors-anywhere.herokuapp.com/' +
           `${environment.wcaUrl}/api/v0/competitions/${competitionId}/wcif`,
           JSON.stringify(wcif),
           {headers: this.headerParams})
