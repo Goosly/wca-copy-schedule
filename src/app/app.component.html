@@ -1,8 +1,6 @@
 <div class="center">
   <h1>WCA Copy Schedule!</h1>
-  <h2>TODO use at own risk</h2>
-  <button (click)="apiService.test()">TEST button for patch wcif</button><br>
-  
+  <h2>Use at own risk - double check the schedule of your competition after copying!</h2>
 
 <!-- LOGIN -->
   <div *ngIf="! apiService.oauthToken">
@@ -28,7 +26,7 @@
     <button *ngIf="state === 'COPY_FROM'"
       (click)="handleGoToSelectToCopyTo()">OK, I'm ready to select a competition to copy to</button>
   </div>
-  
+
 <!-- SELECT COMP (COPY TO) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_TO'">
     <p>Select a competition to copy to:</p>
