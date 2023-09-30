@@ -1,7 +1,7 @@
 rm -r dist/*
 
 ng build -c=production
-mv dist/demo/* dist/
+mv dist/wca-copy-schedule/* dist/
 
 git push origin --delete gh-pages
 
