@@ -1,11 +1,9 @@
 # WCA-copy-schedule
 
-Not deployed anywhere.
-
 # Development
 
 To run locally:
-> ng serve
+> npm run start
 
 To run locally to production:
-> ng serve --prod
+> npm run start:prod
