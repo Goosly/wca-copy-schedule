@@ -3,22 +3,24 @@
   <p>A simple tool to copy all events and the schedule of one competition to another competition</p>
   <h2>Use at your own risk - double check the schedule of your competition after copying!</h2>
 
-<!-- LOGIN -->
+  <!-- LOGIN -->
   <div *ngIf="! apiService.oauthToken">
-    <button (click)="handleLoginToWca()">First: login</button><br>
+    <button (click)="handleLoginToWca()">First: login</button>
+    <br>
   </div>
 
-<!-- SELECT COMP (COPY FROM) -->
+  <!-- SELECT COMP (COPY FROM) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_FROM'">
     <p>Select a competition to copy from:</p>
     <p *ngFor="let competition of competitionsToChooseFrom">
       <input type="radio" name="competitionToCopyFrom" value="{{competition.id}}"
-        (click)="handleCompetitionSelected(competition.id)">{{competition.id}} ({{competition.days}} days)<br>
+             (click)="handleCompetitionSelected(competition.id)">{{ competition.id }} ({{ competition.days }} days)<br>
     </p>
-    <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
+    <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions
+      available :-(</p>
   </div>
 
-<!-- INFORMATION ABOUT COMP (COPY FROM) -->
+  <!-- INFORMATION ABOUT COMP (COPY FROM) -->
   <div *ngIf="competitionId && !wcif">
     <p>Loading competition information...</p>
   </div>
@@ -27,10 +29,11 @@
     <p *ngIf="numberOfVenues === 0">Cannot copy schedule of a competition without venues</p>
     <p *ngIf="numberOfVenues > 1">Cannot copy schedule of a competition with multiple venues</p>
     <button *ngIf="numberOfVenues === 1"
-      (click)="handleGoToSelectToCopyTo()">Next: select a competition to copy to</button>
+            (click)="handleGoToSelectToCopyTo()">Next: select a competition to copy to
+    </button>
   </div>
 
-<!-- SELECT COMP (COPY TO) -->
+  <!-- SELECT COMP (COPY TO) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_TO'">
     <p>Select a competition to copy to</p>
     <div *ngIf="!showPatching">
