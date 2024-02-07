@@ -7,20 +7,8 @@ div {
     width: 90%;
 }
 
-input[type=number] {
-  width: 40px;
-}
-
-.group {
-  width: 40px;
-}
-
-.filter {
-  width: 100px;
-}
-
 button {
-  background-color: #4ddbff;
+  background-color: #1596bc;
   border: none;
   color: white;
   padding: 6px 10px;
@@ -28,24 +16,13 @@ button {
   text-decoration: none;
   display: inline-block;
   font-size: 12px;
+  border-radius: 8px;
 }
 
 button:disabled {
   background-color: #767d87;
 }
 
-.advanced {
-  color: #4886c9;
-}
-
 a {
-  color: #4ddbff;
-}
-
-.newCompetitor {
-  color: crimson;
-}
-
-.invalidAssignment {
-  border:1px solid red;
+  color: #1596bc;
 }

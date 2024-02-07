@@ -32,7 +32,8 @@ export class ApiService {
   }
 
   getCompetitions(): Observable<any> {
-    const url = `${environment.wcaUrl}/api/v0/competitions?managed_by_me=true`;
+    let url = `${environment.wcaUrl}/api/v0/competitions?managed_by_me=true`;
+    url += `&start=${new Date().toISOString()}&sort=start_date&per_page=1000`;
     return this.httpClient.get(url, {headers: this.headerParams});
   }
 
@@ -41,27 +42,18 @@ export class ApiService {
       {headers: this.headerParams});
   }
 
-  submitEventsAndSchedule(competitionId: string, wcifToCopy: any): void {
+  submitEventsAndSchedule(competitionId: string, wcifToCopy: any, done: () => {}): void {
     this.getWcif(competitionId).subscribe(wcif => {
       wcif.events = wcifToCopy.events;
 
       if (wcif.schedule.venues.length === 0) {
-        alert('First navigate to the schedule of the competition on the WCA site and add one venue');
-        return;
+        wcif.schedule.venues = wcifToCopy.schedule.venues;
+      } else {
+        wcif.schedule.venues[0].rooms = [];
+        wcif.schedule.venues[0].rooms.push(wcifToCopy.schedule.venues[0].rooms[0]);
       }
 
-      // todo: just make replace strings (2 pairs, one for each day)
-      const replaceDates = {};
-      let d1 = wcifToCopy.schedule.startDate;
-      let d2 = wcif.schedule.startDate;
-      for (let i = 0; i < wcif.schedule.numberOfDays; i++) {
-        replaceDates[d1] = d2;
-        d1 = this.nextDay(d1);
-        d2 = this.nextDay(d2);
-      }
-
-      wcif.schedule.venues[0].rooms = [];
-      wcif.schedule.venues[0].rooms[0] = wcifToCopy.schedule.venues[0].rooms[0];
+      const replaceDates = this.buildReplaceDates(wcifToCopy, wcif);
 
       const activities = wcif.schedule.venues[0].rooms[0].activities;
       const replaceKeys = Object.keys(replaceDates);
@@ -74,12 +66,33 @@ export class ApiService {
         }
       }
 
-      this.httpClient.patch(
-          `${environment.wcaUrl}/api/v0/competitions/${competitionId}/wcif`,
-          JSON.stringify(wcif),
-          {headers: this.headerParams})
-        .subscribe();
+      this.patchWcif(wcif, competitionId, done);
     });
+  }
+
+  private patchWcif(wcif, competitionId: string, done: () => {}) {
+    const wcifToSend = {
+      id: wcif.id,
+      events: wcif.events,
+      schedule: wcif.schedule,
+    };
+    this.httpClient.patch(
+      `${environment.wcaUrl}/api/v0/competitions/${competitionId}/wcif`,
+      JSON.stringify(wcifToSend),
+      {headers: this.headerParams})
+      .subscribe(() => done());
+  }
+
+  private buildReplaceDates(wcifToCopy: any, wcif) {
+    const replaceDates = {};
+    let d1 = wcifToCopy.schedule.startDate;
+    let d2 = wcif.schedule.startDate;
+    for (let i = 0; i < wcif.schedule.numberOfDays; i++) {
+      replaceDates[d1] = d2;
+      d1 = this.nextDay(d1);
+      d2 = this.nextDay(d2);
+    }
+    return replaceDates;
   }
 
   private nextDay(date: string) {
@@ -89,7 +102,7 @@ export class ApiService {
   }
 
   private format(date: Date): string {
-     return date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
   }
 
 }

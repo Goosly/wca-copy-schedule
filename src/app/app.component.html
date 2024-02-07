@@ -1,6 +1,7 @@
 <div class="center">
-  <h1>WCA Copy Schedule!</h1>
-  <h2>Use at own risk - double check the schedule of your competition after copying!</h2>
+  <h1>WCA Copy Schedule</h1>
+  <p>A simple tool to copy all events and the schedule of one competition to another competition</p>
+  <h2>Use at your own risk - double check the schedule of your competition after copying!</h2>
 
 <!-- LOGIN -->
   <div *ngIf="! apiService.oauthToken">
@@ -21,18 +22,23 @@
   <div *ngIf="competitionId && !wcif">
     <p>Loading competition information...</p>
   </div>
-  <div *ngIf="competitionId && wcif">
+  <div *ngIf="competitionId && wcif && state === 'COPY_FROM'">
     <p>Copy from: {{ competitionId }} - {{ numberOfEvents }} events found</p>
-    <button *ngIf="state === 'COPY_FROM'"
-      (click)="handleGoToSelectToCopyTo()">OK, I'm ready to select a competition to copy to</button>
+    <p *ngIf="numberOfVenues === 0">Cannot copy schedule of a competition without venues</p>
+    <p *ngIf="numberOfVenues > 1">Cannot copy schedule of a competition with multiple venues</p>
+    <button *ngIf="numberOfVenues === 1"
+      (click)="handleGoToSelectToCopyTo()">Next: select a competition to copy to</button>
   </div>
 
 <!-- SELECT COMP (COPY TO) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_TO'">
-    <p>Select a competition to copy to:</p>
-    <p *ngFor="let competition of competitionsToChooseFrom">
-      <button (click)="handleCopyTo(competition.id)">{{competition.id}}</button>
-    </p>
+    <p>Select a competition to copy to</p>
+    <div *ngIf="!showPatching">
+      <p *ngFor="let competition of competitionsToChooseFrom">
+        <button (click)="handleCopyTo(competition.id)">{{ competition.id }}</button>
+      </p>
+    </div>
+    <p *ngIf="showPatching">Copying schedule...</p>
     <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
   </div>
 

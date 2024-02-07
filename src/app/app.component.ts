@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../common/api';
-declare var $ :any;
+declare var $: any;
 
 @Component({
   selector: 'my-app',
@@ -12,9 +12,11 @@ export class AppComponent  {
   competitionsToChooseFrom: Array<any> = null;
   competitionId: string;
   numberOfEvents: number;
+  numberOfVenues: number;
   wcif: any; // wcif to copy from
   state: 'COPY_FROM' | 'COPY_TO';
-  
+  showPatching: boolean = false;
+
   constructor (
     public apiService: ApiService
     ) {
@@ -33,7 +35,7 @@ export class AppComponent  {
       this.competitionsToChooseFrom = comps;
       this.competitionsToChooseFrom.forEach(function(c) {
         c.days = 1 + Math.round((Date.parse(c.end_date) - Date.parse(c.start_date))
-          /(24*60*60*1000));
+          / (24 * 60 * 60 * 1000));
       });
     });
   }
@@ -42,16 +44,18 @@ export class AppComponent  {
     this.competitionId = competitionId;
     this.apiService.getWcif(this.competitionId).subscribe(wcif => {
       this.wcif = wcif;
-      this.numberOfEvents = (wcif && wcif.events) ? wcif.events.length : 0;
+      this.numberOfEvents = wcif?.events?.length;
+      this.numberOfVenues = wcif.schedule?.venues?.length;
     });
   }
-  
+
   handleGoToSelectToCopyTo() {
     this.state = 'COPY_TO';
   }
-  
+
   handleCopyTo(competitionId: string) {
-    this.apiService.submitEventsAndSchedule(competitionId, this.wcif);
+    this.showPatching = true;
+    this.apiService.submitEventsAndSchedule(competitionId, this.wcif, () => this.showPatching = false);
   }
 
 }
