@@ -1,3 +1,3 @@
 npm run build-prod
 
-ngh --dir=dist/demo
+ngh --dir=dist/wca-copy-schedule
