@@ -36,13 +36,21 @@
 
   <!-- SELECT COMP (COPY TO) -->
   <div *ngIf="apiService.oauthToken && state === 'COPY_TO'">
-    <p>Select a competition to copy to</p>
-    <div *ngIf="!showPatching">
+    <div *ngIf="!showPatching && !showDone && !error">
+      <p>Select a competition to copy to</p>
       <p *ngFor="let competition of competitionsToChooseFrom">
         <button (click)="handleCopyTo(competition.id)">{{ competition.id }}</button>
       </p>
     </div>
     <p *ngIf="showPatching">Copying schedule...</p>
+    <p *ngIf="showDone">Done! Please double-check the schedule on the WCA website</p>
+    <div *ngIf="error">
+      <p>The WCA website returned an error:</p>
+      <p>{{error?.status}}</p>
+      <p>{{error?.error}}</p>
+      <p>The most common errors are copying a 2-day competition to a 1-day competition, or a competition with multiple venues to one venue</p>
+    </div>
+
     <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
   </div>
 

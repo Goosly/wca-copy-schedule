@@ -42,7 +42,7 @@ export class ApiService {
       {headers: this.headerParams});
   }
 
-  submitEventsAndSchedule(competitionId: string, wcifToCopy: any, done: () => {}): void {
+  submitEventsAndSchedule(competitionId: string, wcifToCopy: any, doneHandler: () => void, errorHandler: (error) => void): void {
     this.getWcif(competitionId).subscribe(wcif => {
       wcif.events = wcifToCopy.events;
 
@@ -66,11 +66,11 @@ export class ApiService {
         }
       }
 
-      this.patchWcif(wcif, competitionId, done);
+      this.patchWcif(wcif, competitionId, doneHandler, errorHandler);
     });
   }
 
-  private patchWcif(wcif, competitionId: string, done: () => {}) {
+  private patchWcif(wcif, competitionId: string, doneHandler: () => void, errorHandler: (error) => void) {
     const wcifToSend = {
       id: wcif.id,
       events: wcif.events,
@@ -80,7 +80,9 @@ export class ApiService {
       `${environment.wcaUrl}/api/v0/competitions/${competitionId}/wcif`,
       JSON.stringify(wcifToSend),
       {headers: this.headerParams})
-      .subscribe(() => done());
+      .subscribe(() => doneHandler(), (error) => {
+        errorHandler(error?.error);
+      });
   }
 
   private buildReplaceDates(wcifToCopy: any, wcif) {

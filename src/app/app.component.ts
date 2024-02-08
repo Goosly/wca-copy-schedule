@@ -15,7 +15,9 @@ export class AppComponent  {
   numberOfVenues: number;
   wcif: any; // wcif to copy from
   state: 'COPY_FROM' | 'COPY_TO';
-  showPatching: boolean = false;
+  showPatching = false;
+  showDone = false;
+  error;
 
   constructor (
     public apiService: ApiService
@@ -55,7 +57,16 @@ export class AppComponent  {
 
   handleCopyTo(competitionId: string) {
     this.showPatching = true;
-    this.apiService.submitEventsAndSchedule(competitionId, this.wcif, () => this.showPatching = false);
+    this.apiService.submitEventsAndSchedule(competitionId, this.wcif, () => {
+      console.log('')
+      this.showPatching = false;
+      this.showDone = true;
+      return;
+    }, (error) => {
+      this.showPatching = false;
+      this.error = error;
+      return;
+    });
   }
 
 }

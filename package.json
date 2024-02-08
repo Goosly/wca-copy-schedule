@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build-prod": "ng build -c=production"
+    "start-prod": "ng serve -c=production",
+    "build-prod": "ng build -c=production --base-href https://goosly.github.io/wca-copy-schedule/"
   },
   "private": true,
   "dependencies": {
