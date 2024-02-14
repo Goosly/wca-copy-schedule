@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../environments/environment';
+import {LogglyService} from '../loggly/loggly.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class ApiService {
 
   public oauthToken;
   private headerParams: HttpHeaders;
+  private logglyService: LogglyService;
 
   constructor(private httpClient: HttpClient) {
     this.getToken();
@@ -17,6 +19,17 @@ export class ApiService {
     this.headerParams = new HttpHeaders();
     this.headerParams = this.headerParams.set('Authorization', `Bearer ${this.oauthToken}`);
     this.headerParams = this.headerParams.set('Content-Type', 'application/json');
+
+    this.initLoggly();
+  }
+
+  private initLoggly() {
+    this.logglyService = new LogglyService(this.httpClient);
+    this.logglyService.push({
+      logglyKey: '3c4e81e2-b2ae-40e3-88b5-ba8e8b810586',
+      sendConsoleErrors: false,
+      tag: 'wca-copy-schedule'
+    });
   }
 
   private getToken(): void {
@@ -33,7 +46,7 @@ export class ApiService {
 
   getCompetitions(): Observable<any> {
     let url = `${environment.wcaUrl}/api/v0/competitions?managed_by_me=true`;
-    url += `&start=${new Date().toISOString()}&sort=start_date&per_page=1000`;
+    url += `&per_page=1000`;
     return this.httpClient.get(url, {headers: this.headerParams});
   }
 
@@ -107,6 +120,26 @@ export class ApiService {
 
   private format(date: Date): string {
     return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+  }
+
+  logUserCopiedSchedule(from: string, to: string) {
+    this.logMessage('Copied schedule from ' + from + ' to ' + to);
+  }
+
+  logError(error: string) {
+    this.logMessage(error);
+  }
+
+  private logMessage(message: string) {
+    if (!environment.testMode) {
+      setTimeout(() => {
+        try {
+          this.logglyService.push(message);
+        } catch (e) {
+          console.error(e);
+        }
+      }, 0);
+    }
   }
 
 }

@@ -1,3 +1,4 @@
+import { environment } from '../environments/environment';
 import { Component } from '@angular/core';
 import { ApiService } from '../common/api';
 declare var $: any;
@@ -44,6 +45,7 @@ export class AppComponent  {
 
   handleCompetitionSelected(competitionId: string) {
     this.competitionId = competitionId;
+    this.wcif = null;
     this.apiService.getWcif(this.competitionId).subscribe(wcif => {
       this.wcif = wcif;
       this.numberOfEvents = wcif?.events?.length;
@@ -58,15 +60,20 @@ export class AppComponent  {
   handleCopyTo(competitionId: string) {
     this.showPatching = true;
     this.apiService.submitEventsAndSchedule(competitionId, this.wcif, () => {
-      console.log('')
       this.showPatching = false;
       this.showDone = true;
+      this.apiService.logUserCopiedSchedule(this.wcif.id, competitionId);
       return;
     }, (error) => {
       this.showPatching = false;
       this.error = error;
+      this.apiService.logError(error?.status + ' - ' + error?.error);
       return;
     });
+  }
+
+  version() {
+    return environment.version;
   }
 
 }

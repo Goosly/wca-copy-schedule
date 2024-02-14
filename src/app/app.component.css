@@ -8,21 +8,17 @@ div {
 }
 
 button {
-  background-color: #1596bc;
+  background-color: #a05ade;
   border: none;
   color: white;
-  padding: 6px 10px;
+  padding: 5px 8px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 12px;
+  font-size: 15px;
   border-radius: 8px;
 }
 
-button:disabled {
-  background-color: #767d87;
-}
-
-a {
-  color: #1596bc;
+h1, h6 {
+  display: inline-block;
 }

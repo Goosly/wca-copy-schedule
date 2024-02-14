@@ -6,6 +6,7 @@ export const environment = {
 
   wcaAppId : 'example-application-id',
   wcaSecret : 'example-secret',
-  
+
+  version: '1.0.001',
   testMode: true
 };

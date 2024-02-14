@@ -1,6 +1,6 @@
 <div class="center">
 
-  <h1>WCA Copy Schedule</h1>
+  <h1>WCA Copy Schedule</h1>&nbsp;<h6>{{version()}}</h6>
   <p>A simple tool to copy the schedule of one WCA competition to another WCA competition</p>
   <p>Only use for competitions that are not announced yet!</p>
   <h2>Use at your own risk - double-check the schedule of your competition after copying!</h2>
@@ -8,18 +8,6 @@
   <!-- LOGIN -->
   <div *ngIf="! apiService.oauthToken">
     <button (click)="handleLoginToWca()">First: login</button>
-    <br>
-  </div>
-
-  <!-- SELECT COMP (COPY FROM) -->
-  <div *ngIf="apiService.oauthToken && state === 'COPY_FROM'">
-    <p>Select a competition to copy from:</p>
-    <p *ngFor="let competition of competitionsToChooseFrom">
-      <input type="radio" name="competitionToCopyFrom" value="{{competition.id}}"
-             (click)="handleCompetitionSelected(competition.id)">{{ competition.id }} ({{ competition.days }} days)<br>
-    </p>
-    <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions
-      available :-(</p>
   </div>
 
   <!-- INFORMATION ABOUT COMP (COPY FROM) -->
@@ -33,6 +21,16 @@
     <button *ngIf="numberOfVenues === 1"
             (click)="handleGoToSelectToCopyTo()">Next: select a competition to copy to
     </button>
+  </div>
+
+  <!-- SELECT COMP (COPY FROM) -->
+  <div *ngIf="apiService.oauthToken && state === 'COPY_FROM'">
+    <p>__________________________________</p>
+    <p>Select a competition to copy from:</p>
+    <p *ngFor="let competition of competitionsToChooseFrom">
+      <input type="radio" name="competitionToCopyFrom" value="{{competition.id}}"
+             (click)="handleCompetitionSelected(competition.id)">{{ competition.id }} ({{ competition.days }} days)<br>
+    </p>
   </div>
 
   <!-- SELECT COMP (COPY TO) -->
@@ -51,8 +49,6 @@
       <p>{{error?.error}}</p>
       <p>The most common errors are copying a 2-day competition to a 1-day competition, or copying to a competition that is announced already</p>
     </div>
-
-    <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
   </div>
 
 </div>
