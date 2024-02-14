@@ -50,7 +50,9 @@ export class ApiService {
         wcif.schedule.venues = wcifToCopy.schedule.venues;
       } else {
         wcif.schedule.venues[0].rooms = [];
-        wcif.schedule.venues[0].rooms.push(wcifToCopy.schedule.venues[0].rooms[0]);
+        for (const room of wcifToCopy.schedule.venues[0].rooms) {
+          wcif.schedule.venues[0].rooms.push(room);
+        }
       }
 
       const replaceDates = this.buildReplaceDates(wcifToCopy, wcif);
@@ -87,20 +89,20 @@ export class ApiService {
 
   private buildReplaceDates(wcifToCopy: any, wcif) {
     const replaceDates = {};
-    let d1 = wcifToCopy.schedule.startDate;
-    let d2 = wcif.schedule.startDate;
+    let originalDate = wcifToCopy.schedule.startDate;
+    let newDate = wcif.schedule.startDate;
     for (let i = 0; i < wcif.schedule.numberOfDays; i++) {
-      replaceDates[d1] = d2;
-      d1 = this.nextDay(d1);
-      d2 = this.nextDay(d2);
+      replaceDates[originalDate] = newDate;
+      originalDate = this.nextDay(originalDate);
+      newDate = this.nextDay(newDate);
     }
     return replaceDates;
   }
 
-  private nextDay(date: string) {
-    const d = new Date(Date.parse(date));
-    d.setDate(d.getDate() + 1);
-    return this.format(d);
+  private nextDay(dateAsString: string) {
+    const date = new Date(Date.parse(dateAsString));
+    date.setDate(date.getDate() + 1);
+    return this.format(date);
   }
 
   private format(date: Date): string {

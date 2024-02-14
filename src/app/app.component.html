@@ -2,7 +2,8 @@
 
   <h1>WCA Copy Schedule</h1>
   <p>A simple tool to copy the schedule of one WCA competition to another WCA competition</p>
-  <h2>Use at your own risk - double check the schedule of your competition after copying!</h2>
+  <p>Only use for competitions that are not announced yet!</p>
+  <h2>Use at your own risk - double-check the schedule of your competition after copying!</h2>
 
   <!-- LOGIN -->
   <div *ngIf="! apiService.oauthToken">
@@ -48,7 +49,7 @@
       <p>The WCA website returned an error:</p>
       <p>{{error?.status}}</p>
       <p>{{error?.error}}</p>
-      <p>The most common errors are copying a 2-day competition to a 1-day competition, or a competition with multiple venues to one venue</p>
+      <p>The most common errors are copying a 2-day competition to a 1-day competition, or copying to a competition that is announced already</p>
     </div>
 
     <p *ngIf="!!competitionsToChooseFrom && competitionsToChooseFrom.length < 2">You have fewer than 2 competitions available :-(</p>
