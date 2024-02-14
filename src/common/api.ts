@@ -57,16 +57,8 @@ export class ApiService {
 
   submitEventsAndSchedule(competitionId: string, wcifToCopy: any, doneHandler: () => void, errorHandler: (error) => void): void {
     this.getWcif(competitionId).subscribe(wcif => {
-      wcif.events = wcifToCopy.events;
-
-      if (wcif.schedule.venues.length === 0) {
-        wcif.schedule.venues = wcifToCopy.schedule.venues;
-      } else {
-        wcif.schedule.venues[0].rooms = [];
-        for (const room of wcifToCopy.schedule.venues[0].rooms) {
-          wcif.schedule.venues[0].rooms.push(room);
-        }
-      }
+      this.copyEvents(wcif, wcifToCopy);
+      this.copyVenueAndRooms(wcif, wcifToCopy);
 
       const replaceDates = this.buildReplaceDates(wcifToCopy, wcif);
 
@@ -83,6 +75,21 @@ export class ApiService {
 
       this.patchWcif(wcif, competitionId, doneHandler, errorHandler);
     });
+  }
+
+  private copyEvents(wcif, wcifToCopy: any) {
+    wcif.events = wcifToCopy.events;
+  }
+
+  private copyVenueAndRooms(wcif, wcifToCopy: any) {
+    if (wcif.schedule.venues.length === 0) {
+      wcif.schedule.venues = wcifToCopy.schedule.venues;
+    } else if (wcif.schedule.venues[0].rooms?.length !== wcifToCopy.schedule.venues[0].rooms.length) {
+      wcif.schedule.venues[0].rooms = [];
+      for (const room of wcifToCopy.schedule.venues[0].rooms) {
+        wcif.schedule.venues[0].rooms.push(room);
+      }
+    }
   }
 
   private patchWcif(wcif, competitionId: string, doneHandler: () => void, errorHandler: (error) => void) {
