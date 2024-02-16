@@ -90,7 +90,7 @@ export class ApiService {
         wcif.schedule.venues[0].rooms.push(room);
       }
     } else {
-      for (const i = 0; i < wcif.schedule.venues[0].rooms.length; i++) {
+      for (let i = 0; i < wcif.schedule.venues[0].rooms.length; i++) {
         wcif.schedule.venues[0].rooms[i].activities = wcifToCopy.schedule.venues[0].rooms[i].activities;
       }
     }
