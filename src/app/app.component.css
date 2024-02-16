@@ -1,5 +1,5 @@
 div {
-  font-family: 'Roboto', sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .center {
@@ -17,7 +17,13 @@ button {
   display: inline-block;
   font-size: 15px;
   border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
+
+button:hover {
+  background-color: #ff28e1;
+}
+
 
 h1, h6 {
   display: inline-block;

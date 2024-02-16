@@ -8,6 +8,6 @@ export const environment = {
   wcaAppId : 'pgCizByZs0QlGzTGX3Q94xfHfJIO-_bJYPUqSedzoDY',
   wcaSecret : 'FoIYjEHaI5BwwD9ke98UPkiV2_TlDMIEhaFrE5aLOZk',
 
-  version: '1.0.002',
+  version: '1.0.003',
   testMode: false
 };
