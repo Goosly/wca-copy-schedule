@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../environments/environment';
 import {LogglyService} from '../loggly/loggly.service';
+import * as moment from 'moment-timezone';
 
 @Injectable({
   providedIn: 'root'
@@ -55,26 +56,36 @@ export class ApiService {
       {headers: this.headerParams});
   }
 
-  submitEventsAndSchedule(competitionId: string, wcifToCopy: any, doneHandler: () => void, errorHandler: (error) => void): void {
+  submitEventsAndSchedule(competitionId: string, wcifToCopy: any, shiftMinutes: number, doneHandler: () => void, errorHandler: (error) => void): void {
     this.getWcif(competitionId).subscribe(wcif => {
       this.copyEvents(wcif, wcifToCopy);
       this.copyVenueAndRooms(wcif, wcifToCopy);
 
-      const replaceDates = this.buildReplaceDates(wcifToCopy, wcif);
-
       const activities = wcif.schedule.venues[0].rooms[0].activities;
-      const replaceKeys = Object.keys(replaceDates);
       for (let i = 0; i < activities.length; i++) {
-        for (let r = 0; r < replaceKeys.length; r++) {
-          activities[i].startTime = activities[i].startTime.replace(replaceKeys[r], replaceDates[replaceKeys[r]]);
-          activities[i].endTime = activities[i].endTime.replace(replaceKeys[r], replaceDates[replaceKeys[r]]);
-          activities[i].childActivities = [];
-          activities[i].extensions = [];
-        }
+        const shiftDays = this.difference(wcif, wcifToCopy);
+        const timezone = wcif.schedule.venues[0].timezone;
+        activities[i].startTime = this.shift(activities[i].startTime, shiftDays, shiftMinutes, timezone);
+        activities[i].endTime = this.shift(activities[i].endTime, shiftDays, shiftMinutes, timezone);
+        activities[i].childActivities = [];
+        activities[i].extensions = [];
       }
 
       this.patchWcif(wcif, competitionId, doneHandler, errorHandler);
     });
+  }
+
+  private shift(timeInUtcFormat, shiftDays: number, shiftMinutes: number, timezone: string) {
+    const shift = moment(timeInUtcFormat);
+    shift.tz(timezone);
+    shift.add(shiftDays, 'days');
+    shift.add(shiftMinutes, 'minutes');
+    return shift.tz('UTC').format();
+  }
+
+  private difference(wcif: any, wcifToCopy: any): number {
+    return moment(wcif.schedule.startDate)
+      .diff(wcifToCopy.schedule.startDate, 'days');
   }
 
   private copyEvents(wcif, wcifToCopy: any) {
@@ -111,28 +122,6 @@ export class ApiService {
       });
   }
 
-  private buildReplaceDates(wcifToCopy: any, wcif) {
-    const replaceDates = {};
-    let originalDate = wcifToCopy.schedule.startDate;
-    let newDate = wcif.schedule.startDate;
-    for (let i = 0; i < wcif.schedule.numberOfDays; i++) {
-      replaceDates[originalDate] = newDate;
-      originalDate = this.nextDay(originalDate);
-      newDate = this.nextDay(newDate);
-    }
-    return replaceDates;
-  }
-
-  private nextDay(dateAsString: string) {
-    const date = new Date(Date.parse(dateAsString));
-    date.setDate(date.getDate() + 1);
-    return this.format(date);
-  }
-
-  private format(date: Date): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
-  }
-
   logUserCopiedSchedule(from: string, to: string) {
     this.logMessage('Copied schedule from ' + from + ' to ' + to);
   }
@@ -152,5 +141,4 @@ export class ApiService {
       }, 0);
     }
   }
-
 }

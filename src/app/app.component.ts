@@ -34,13 +34,16 @@ export class AppComponent  {
   }
 
   handleGetCompetitions() {
-    this.apiService.getCompetitions().subscribe(comps => {
-      this.competitionsToChooseFrom = comps;
-      this.competitionsToChooseFrom.forEach(function(c) {
-        c.days = 1 + Math.round((Date.parse(c.end_date) - Date.parse(c.start_date))
-          / (24 * 60 * 60 * 1000));
-      });
+    this.apiService.getCompetitions().subscribe(competitions => {
+      this.competitionsToChooseFrom = competitions;
+      this.competitionsToChooseFrom
+        .forEach((competition) => competition.days = this.getDays(competition));
     });
+  }
+
+  private getDays(competition) {
+    return Math.round((Date.parse(competition.end_date) - Date.parse(competition.start_date))
+      / (24 * 60 * 60 * 1000)) + 1;
   }
 
   handleCompetitionSelected(competitionId: string) {
@@ -59,7 +62,8 @@ export class AppComponent  {
 
   handleCopyTo(competitionId: string) {
     this.showPatching = true;
-    this.apiService.submitEventsAndSchedule(competitionId, this.wcif, () => {
+    // TODO shiftMinutes from user input?
+    this.apiService.submitEventsAndSchedule(competitionId, this.wcif, 0, () => {
       this.showPatching = false;
       this.showDone = true;
       this.apiService.logUserCopiedSchedule(this.wcif.id, competitionId);
