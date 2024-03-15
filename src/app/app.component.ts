@@ -71,7 +71,7 @@ export class AppComponent  {
     }, (error) => {
       this.showPatching = false;
       this.error = error;
-      this.apiService.logError(error?.status + ' - ' + error?.error);
+      this.apiService.logError(error?.status + ' - ' + error?.error + ' - while copying from ' + this.wcif.id + ' to ' + competitionId);
       return;
     });
   }

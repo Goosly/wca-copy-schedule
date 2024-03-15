@@ -60,8 +60,15 @@ export class ApiService {
     this.getWcif(competitionId).subscribe(wcif => {
       this.copyEvents(wcif, wcifToCopy);
       this.copyVenueAndRooms(wcif, wcifToCopy);
+      this.copyAndShiftActivities(wcif, wcifToCopy, shiftMinutes);
 
-      const activities = wcif.schedule.venues[0].rooms[0].activities;
+      this.patchWcif(wcif, competitionId, doneHandler, errorHandler);
+    });
+  }
+
+  private copyAndShiftActivities(wcif, wcifToCopy: any, shiftMinutes: number) {
+    for (let j = 0; j < wcif.schedule.venues[0].rooms.length; j++) {
+      const activities = wcif.schedule.venues[0].rooms[j].activities;
       for (let i = 0; i < activities.length; i++) {
         const shiftDays = this.difference(wcif, wcifToCopy);
         const timezone = wcif.schedule.venues[0].timezone;
@@ -70,9 +77,7 @@ export class ApiService {
         activities[i].childActivities = [];
         activities[i].extensions = [];
       }
-
-      this.patchWcif(wcif, competitionId, doneHandler, errorHandler);
-    });
+    }
   }
 
   private shift(timeInUtcFormat, shiftDays: number, shiftMinutes: number, timezone: string) {
