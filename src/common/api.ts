@@ -94,6 +94,10 @@ export class ApiService {
   }
 
   private copyEvents(wcif, wcifToCopy: any) {
+    if (wcifToCopy.id === 'StevenageMay2023' || wcifToCopy.id === 'RubiksUKChampionship2023') {
+      console.log('Skip copy event for Eleanor');
+      return;
+    }
     wcif.events = wcifToCopy.events;
   }
 
