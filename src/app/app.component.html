@@ -13,6 +13,11 @@
   <!-- INFORMATION ABOUT COMP (COPY FROM) -->
   <div *ngIf="competitionId && !wcif">
     <p>Loading competition information...</p>
+    <div *ngIf="error">
+      <p>The WCA website returned an error when loading this competition:</p>
+      <p>{{error?.status}}</p>
+      <p>{{error?.error}}</p>
+    </div>
   </div>
   <div *ngIf="competitionId && wcif && state === 'COPY_FROM'">
     <p>Copy from: {{ competitionId }} - {{ numberOfEvents }} events found</p>

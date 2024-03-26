@@ -53,6 +53,9 @@ export class AppComponent  {
       this.wcif = wcif;
       this.numberOfEvents = wcif?.events?.length;
       this.numberOfVenues = wcif.schedule?.venues?.length;
+    }, (error) => {
+      this.error = error;
+      this.apiService.logError(error?.status + ' - ' + error?.error + ' - while fetching ' + competitionId);
     });
   }
 
@@ -72,7 +75,6 @@ export class AppComponent  {
       this.showPatching = false;
       this.error = error;
       this.apiService.logError(error?.status + ' - ' + error?.error + ' - while copying from ' + this.wcif.id + ' to ' + competitionId);
-      return;
     });
   }
 
